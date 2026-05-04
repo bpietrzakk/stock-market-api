@@ -21,12 +21,12 @@ Two application instances behind an nginx load balancer. If one instance crashes
   Client
     │
     ▼
- nginx (port ${PORT})        ← user-defined, default 8080
-  ├──▶ app-1:8080            ← internal port, fixed
-  └──▶ app-2:8080            ← internal port, fixed
-          │
-          ▼
-      PostgreSQL
+ nginx (host port ${PORT}, default 8080)
+  ├──▶ app-1 (container port 8080)
+  └──▶ app-2 (container port 8080)
+              │
+              ▼
+       PostgreSQL (container port 5432)
 ```
 
 ---
@@ -38,6 +38,17 @@ Two application instances behind an nginx load balancer. If one instance crashes
 - ~500MB free disk space (for images)
 - Ports: configurable via PORT env var (default 8080)
 
+**Optional (for local development outside Docker):**
+- Java 21
+- Maven 3.9+
+
+### Tested platforms
+
+- macOS arm64 (Apple Silicon, M3)
+- Windows x64
+
+Docker handles cross-platform builds automatically — the official `eclipse-temurin:21` and `postgres:16` images are multi-arch (arm64 + x64).
+
 ---
 
 ## Quick Start
@@ -46,14 +57,23 @@ Two application instances behind an nginx load balancer. If one instance crashes
 
 ```bash
 git clone https://github.com/bpietrzakk/stock-market-simulation.git
+```
+```bash
 cd stock-market-simulation
-
-# Linux / macOS
+```
+**Linux/MacOS:**
+```bash
 ./start.sh          # default port 8080
+```
+```bash
 ./start.sh 9090     # custom port
+```
 
-# Windows
+**Windows:**
+```bash
 start.bat           # default port 8080
+```
+```bash
 start.bat 9090      # custom port
 ```
 
@@ -124,7 +144,7 @@ curl http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/A
 
 ```bash
 curl http://localhost:8080/log
-# {"log":[{"type":"BUY","walletId":"123e4567-...","stockName":"AAPL"}]}
+# {"log":[{"type":"buy","wallet_id":"123e4567-e89b-12d3-a456-426614174000","stock_name":"AAPL"}]}
 ```
 
 ### Error responses
@@ -158,6 +178,9 @@ curl -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/
 |--------|------|-------------|
 | `POST` | `/chaos` | Kill current app instance (HA demo) |
 
+```bash
+curl -X POST http://localhost:8080/chaos
+```
 ---
 
 ## High Availability
@@ -184,6 +207,7 @@ curl http://localhost:8080/stocks
 - **Controller → Service → Repository** — standard layered architecture. Controllers handle HTTP, services handle business logic, repositories handle data access. Makes testing easier and keeps concerns separated.
 - **Custom domain exceptions** — `NotFoundException` and `InvalidOperationException` with a global `@ControllerAdvice` handler instead of `ResponseStatusException`. Cleaner error responses and a single place to manage error handling.
 - **Pessimistic lock on `BankStock`** — `@Lock(LockModeType.PESSIMISTIC_WRITE)` on `findByName` prevents race conditions when multiple clients buy the same stock simultaneously.
+- **Pessimistic locking over optimistic** — for high-contention writes (concurrent buys on the same popular stock), pessimistic locking avoids retry storms. Optimistic locking would be a better fit for low-contention scenarios where conflicts are rare and retries are cheap.
 
 ---
 
