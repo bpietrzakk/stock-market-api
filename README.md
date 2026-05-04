@@ -1,4 +1,4 @@
-co my# Stock Market Simulator
+# Stock Market Simulator
 
 Simplified stock exchange REST API with high availability. Built for Remitly internship recruitment task.
 
@@ -46,7 +46,7 @@ Two application instances behind an nginx load balancer. If one instance crashes
 
 ```bash
 git clone https://github.com/bpietrzakk/stock-market-simulation.git
-cd stockmarket
+cd stock-market-simulation
 
 # Linux / macOS
 ./start.sh          # default port 8080
