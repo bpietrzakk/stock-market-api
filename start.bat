@@ -9,4 +9,5 @@ if "%~1"=="" (
 )
 
 echo Starting stockmarket on port %PORT%...
-set PORT=%PORT% && docker compose up --build
+set PORT=%PORT%
+docker compose up --build
