@@ -56,14 +56,26 @@ Docker handles cross-platform builds automatically — the official `eclipse-tem
 **Prerequisites:** Docker and Docker Compose must be installed.
 
 ```bash
-git clone https://github.com/bpietrzakk/stock-market-simulation.git && cd stock-market-simulation
-
+git clone https://github.com/bpietrzakk/stock-market-simulation.git
+```
+```bash
+cd stock-market-simulation
+```
+```bash
 # Linux / macOS
+```
+```bash
 ./start.sh          # default port 8080
+```
+```bash
 ./start.sh 9090     # custom port
+```
 
 # Windows
+```bash
 start.bat           # default port 8080
+```
+```bash
 start.bat 9090      # custom port
 ```
 
