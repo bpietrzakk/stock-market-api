@@ -61,9 +61,7 @@ git clone https://github.com/bpietrzakk/stock-market-simulation.git
 ```bash
 cd stock-market-simulation
 ```
-```bash
-# Linux / macOS
-```
+**Linux/MacOS:**
 ```bash
 ./start.sh          # default port 8080
 ```
@@ -71,7 +69,7 @@ cd stock-market-simulation
 ./start.sh 9090     # custom port
 ```
 
-# Windows
+**Windows:**
 ```bash
 start.bat           # default port 8080
 ```
