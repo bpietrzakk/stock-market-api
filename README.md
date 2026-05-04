@@ -102,7 +102,8 @@ docker compose down      # stop but keep data
 curl -X POST http://localhost:8080/stocks \
   -H "Content-Type: application/json" \
   -d '{"stocks": [{"name": "AAPL", "quantity": 100}, {"name": "GOOG", "quantity": 50}]}'
-
+```
+```bash
 # get bank state
 curl http://localhost:8080/stocks
 # {"stocks":[{"name":"AAPL","quantity":100},{"name":"GOOG","quantity":50}]}
@@ -121,16 +122,19 @@ curl http://localhost:8080/stocks
 curl -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL \
   -H "Content-Type: application/json" \
   -d '{"type": "buy"}'
-
+```
+```bash
 # sell a stock
 curl -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL \
   -H "Content-Type: application/json" \
   -d '{"type": "sell"}'
-
+```
+```bash
 # get wallet state
 curl http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000
 # {"id":"123e4567-e89b-12d3-a456-426614174000","stocks":[{"name":"AAPL","quantity":1}]}
-
+```
+```bash
 # get quantity of specific stock
 curl http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL
 # 1
@@ -158,13 +162,15 @@ curl -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/
   -H "Content-Type: application/json" \
   -d '{"type": "buy"}'
 # {"status":404,"message":"Stock not found: UNKNOWN"}
-
+```
+```bash
 # bank has no stock left → 400
 curl -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL \
   -H "Content-Type: application/json" \
   -d '{"type": "buy"}'
 # {"status":400,"message":"Stock AAPL is out of stock"}
-
+```
+```bash
 # trying to sell a stock you don't own → 400
 curl -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL \
   -H "Content-Type: application/json" \
@@ -190,7 +196,8 @@ nginx is configured with `least_conn` load balancing and automatic failover:
 ```bash
 # kill one instance (assuming default port)
 curl -X POST http://localhost:8080/chaos
-
+```
+```bash
 # next request still works — nginx routes to the second instance
 curl http://localhost:8080/stocks
 ```
