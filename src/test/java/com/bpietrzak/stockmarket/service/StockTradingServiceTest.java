@@ -88,7 +88,7 @@ class StockTradingServiceTest {
         BankStock bankStock = new BankStock(stockName, 1);
         when(bankStockRepository.findByName(stockName)).thenReturn(Optional.of(bankStock));
         when(walletRepository.findById(walletId)).thenReturn(Optional.of(wallet));
-        when(walletStockRepository.findByWalletAndName(wallet, stockName)).thenReturn(Optional.empty());
+        when(walletStockRepository.findByWalletAndNameWithLock(wallet, stockName)).thenReturn(Optional.empty());
 
         // call and check if an exception was thrown
         assertThatThrownBy(() -> service.sell(walletId, stockName))
@@ -106,7 +106,7 @@ class StockTradingServiceTest {
         WalletStock walletStock = new WalletStock(wallet, stockName, 0);
         when(bankStockRepository.findByName(stockName)).thenReturn(Optional.of(bankStock));
         when(walletRepository.findById(walletId)).thenReturn(Optional.of(wallet));
-        when(walletStockRepository.findByWalletAndName(wallet, stockName)).thenReturn(Optional.of(walletStock));
+        when(walletStockRepository.findByWalletAndNameWithLock(wallet, stockName)).thenReturn(Optional.of(walletStock));
 
         // call and check if an exception was thrown
         assertThatThrownBy(() -> service.sell(walletId, stockName))
@@ -124,7 +124,7 @@ class StockTradingServiceTest {
         WalletStock walletStock = new WalletStock(wallet, stockName, 1);
         when(bankStockRepository.findByName(stockName)).thenReturn(Optional.of(bankStock));
         when(walletRepository.findById(walletId)).thenReturn(Optional.of(wallet));
-        when(walletStockRepository.findByWalletAndName(wallet, stockName)).thenReturn(Optional.of(walletStock));
+        when(walletStockRepository.findByWalletAndNameWithLock(wallet, stockName)).thenReturn(Optional.of(walletStock));
 
         // call
         service.buy(walletId, stockName);
@@ -153,7 +153,7 @@ class StockTradingServiceTest {
         WalletStock walletStock = new WalletStock(wallet, stockName, 1);
         when(bankStockRepository.findByName(stockName)).thenReturn(Optional.of(bankStock));
         when(walletRepository.findById(walletId)).thenReturn(Optional.of(wallet));
-        when(walletStockRepository.findByWalletAndName(wallet, stockName)).thenReturn(Optional.of(walletStock));
+        when(walletStockRepository.findByWalletAndNameWithLock(wallet, stockName)).thenReturn(Optional.of(walletStock));
 
         // call
         service.sell(walletId, stockName);
@@ -182,7 +182,7 @@ class StockTradingServiceTest {
         when(bankStockRepository.findByName(stockName)).thenReturn(Optional.of(bankStock));
         when(walletRepository.findById(walletId)).thenReturn(Optional.empty());
         when(walletRepository.save(any(Wallet.class))).thenAnswer(inv -> inv.getArgument(0));
-        when(walletStockRepository.findByWalletAndName(any(Wallet.class), eq(stockName))).thenReturn(Optional.of(walletStock));
+        when(walletStockRepository.findByWalletAndNameWithLock(any(Wallet.class), eq(stockName))).thenReturn(Optional.of(walletStock));
 
         // call
         service.buy(walletId, stockName);
@@ -212,7 +212,7 @@ class StockTradingServiceTest {
         BankStock bankStock = new BankStock(stockName, 1);
         when(bankStockRepository.findByName(stockName)).thenReturn(Optional.of(bankStock));
         when(walletRepository.findById(walletId)).thenReturn(Optional.of(wallet));
-        when(walletStockRepository.findByWalletAndName(wallet, stockName)).thenReturn(Optional.empty());
+        when(walletStockRepository.findByWalletAndNameWithLock(wallet, stockName)).thenReturn(Optional.empty());
         when(walletStockRepository.save(any(WalletStock.class))).thenAnswer(inv -> inv.getArgument(0));
 
         // call

@@ -51,7 +51,7 @@ public class StockTradingService {
         Wallet wallet = walletRepository.findById(walletId).orElseGet(() -> walletRepository.save(new Wallet(walletId)));
 
         // create wallet stock entry on first buy of this stock
-        WalletStock walletStock = walletStockRepository.findByWalletAndName(wallet, stockName).orElseGet(() -> walletStockRepository.save(new WalletStock(wallet, stockName, 0)));
+        WalletStock walletStock = walletStockRepository.findByWalletAndNameWithLock(wallet, stockName).orElseGet(() -> walletStockRepository.save(new WalletStock(wallet, stockName, 0)));
 
         // transfer stock from bank to wallet
         walletStock.setQuantity(walletStock.getQuantity() + 1);
@@ -70,7 +70,7 @@ public class StockTradingService {
         Wallet wallet = walletRepository.findById(walletId).orElseGet(() -> walletRepository.save(new Wallet(walletId)));
 
         // check if there are any stocks left to sell in wallet
-        WalletStock walletStock = walletStockRepository.findByWalletAndName(wallet, stockName)
+        WalletStock walletStock = walletStockRepository.findByWalletAndNameWithLock(wallet, stockName)
                 .filter(ws -> ws.getQuantity() > 0)
                 .orElseThrow(() -> new InvalidOperationException("Wallet doesn't have enough stocks: " + stockName));
 
