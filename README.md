@@ -31,16 +31,11 @@ Two application instances behind an nginx load balancer. If one instance crashes
 
 ---
 
-## Requirements
+## Prerequisites
 
-- Docker 20.10+
-- Docker Compose v2 (`docker compose`, not `docker-compose`)
-- ~500MB free disk space (for images)
-- Ports: configurable via PORT env var (default 8080)
-
-**Optional (for local development outside Docker):**
-- Java 21
-- Maven 3.9+
+- **Git**
+- **Docker** 20.10+ — Docker Desktop 3.x+ includes Docker Compose v2 as a built-in plugin (`docker compose`), no separate install needed
+- **JDK 21** — only required to run tests locally (`./mvnw test`); the application itself runs entirely inside Docker
 
 ### Tested platforms
 
@@ -53,42 +48,63 @@ Docker handles cross-platform builds automatically — the official `eclipse-tem
 
 ## Quick Start
 
-**Prerequisites:** Docker and Docker Compose must be installed.
+Clone the repository:
 
 ```bash
 git clone https://github.com/bpietrzakk/stock-market-simulation.git
 ```
+
 ```bash
 cd stock-market-simulation
 ```
-**Linux/MacOS:**
+
+**Linux / macOS** — default port (8080):
+
 ```bash
-./start.sh          # default port 8080
-```
-```bash
-./start.sh 9090     # custom port
+./start.sh
 ```
 
-**Windows:**
+**Linux / macOS** — custom port:
+
 ```bash
-.\start.bat           # default port 8080
+./start.sh 9090
 ```
-```bash
-.\start.bat 9090      # custom port
+
+**Windows** — default port (8080):
+
+```bat
+.\start.bat
+```
+
+**Windows** — custom port:
+
+```bat
+.\start.bat 9090
 ```
 
 The application will be available at `http://localhost:<PORT>`.
 
 ### Cleanup
 
+Stop and remove all data (volumes):
+
 ```bash
-docker compose down -v   # stop and remove all data (volumes)
-docker compose down      # stop but keep data
+docker compose down -v
+```
+
+Stop but keep data:
+
+```bash
+docker compose down
 ```
 
 ---
 
 ## API Endpoints
+
+All examples use port 8080. Replace with your configured port if different.
+
+`curl` works on Linux, macOS, and Windows CMD (Windows 10+). On Windows PowerShell, `curl` is an alias for `Invoke-WebRequest` — use the PowerShell examples instead.
 
 ### Bank
 
@@ -97,16 +113,38 @@ docker compose down      # stop but keep data
 | `POST` | `/stocks` | Set bank stock state |
 | `GET` | `/stocks` | Get current bank state |
 
+**Set bank state:**
+
 ```bash
-# set bank state
 curl -X POST http://localhost:8080/stocks \
   -H "Content-Type: application/json" \
   -d '{"stocks": [{"name": "AAPL", "quantity": 100}, {"name": "GOOG", "quantity": 50}]}'
 ```
+
+PowerShell:
+
+```powershell
+Invoke-RestMethod -Method POST -Uri http://localhost:8080/stocks -ContentType "application/json" -Body '{"stocks": [{"name": "AAPL", "quantity": 100}, {"name": "GOOG", "quantity": 50}]}'
+```
+
+Returns 200 OK.
+
+**Get bank state:**
+
 ```bash
-# get bank state
 curl http://localhost:8080/stocks
-# {"stocks":[{"name":"AAPL","quantity":100},{"name":"GOOG","quantity":50}]}
+```
+
+PowerShell:
+
+```powershell
+Invoke-RestMethod http://localhost:8080/stocks
+```
+
+Response:
+
+```json
+{"stocks":[{"name":"AAPL","quantity":100},{"name":"GOOG","quantity":50}]}
 ```
 
 ### Wallet
@@ -117,27 +155,72 @@ curl http://localhost:8080/stocks
 | `GET` | `/wallets/{wallet_id}` | Get wallet state |
 | `GET` | `/wallets/{wallet_id}/stocks/{stock_name}` | Get quantity of a specific stock |
 
+**Buy a stock** (wallet is created automatically if it doesn't exist):
+
 ```bash
-# buy a stock (wallet is created automatically if it doesn't exist)
 curl -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL \
   -H "Content-Type: application/json" \
   -d '{"type": "buy"}'
 ```
+
+PowerShell:
+
+```powershell
+Invoke-RestMethod -Method POST -Uri http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL -ContentType "application/json" -Body '{"type": "buy"}'
+```
+
+Returns 200 OK.
+
+**Sell a stock:**
+
 ```bash
-# sell a stock
 curl -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL \
   -H "Content-Type: application/json" \
   -d '{"type": "sell"}'
 ```
-```bash
-# get wallet state
-curl http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000
-# {"id":"123e4567-e89b-12d3-a456-426614174000","stocks":[{"name":"AAPL","quantity":1}]}
+
+PowerShell:
+
+```powershell
+Invoke-RestMethod -Method POST -Uri http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL -ContentType "application/json" -Body '{"type": "sell"}'
 ```
+
+Returns 200 OK.
+
+**Get wallet state:**
+
 ```bash
-# get quantity of specific stock
+curl http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000
+```
+
+PowerShell:
+
+```powershell
+Invoke-RestMethod http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000
+```
+
+Response:
+
+```json
+{"id":"123e4567-e89b-12d3-a456-426614174000","stocks":[{"name":"AAPL","quantity":1}]}
+```
+
+**Get quantity of a specific stock:**
+
+```bash
 curl http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL
-# 1
+```
+
+PowerShell:
+
+```powershell
+Invoke-RestMethod http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL
+```
+
+Response:
+
+```
+1
 ```
 
 ### Audit Log
@@ -148,34 +231,82 @@ curl http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/A
 
 ```bash
 curl http://localhost:8080/log
-# {"log":[{"type":"buy","wallet_id":"123e4567-e89b-12d3-a456-426614174000","stock_name":"AAPL"}]}
+```
+
+PowerShell:
+
+```powershell
+Invoke-RestMethod http://localhost:8080/log
+```
+
+Response:
+
+```json
+{"log":[{"type":"buy","wallet_id":"123e4567-e89b-12d3-a456-426614174000","stock_name":"AAPL"}]}
 ```
 
 ### Error responses
 
-> Examples assume bank state was set to `{"AAPL": 0}` for the second
-> case (out of stock), and the wallet has never bought AAPL for the third.
+The examples below assume bank state was set with AAPL at quantity 0 for the "out of stock" case, and the wallet has never bought AAPL for the "insufficient wallet stock" case.
+
+**Stock doesn't exist in bank — 404:**
 
 ```bash
-# stock doesn't exist in bank → 404
 curl -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/UNKNOWN \
   -H "Content-Type: application/json" \
   -d '{"type": "buy"}'
-# {"status":404,"message":"Stock not found: UNKNOWN"}
 ```
+
+PowerShell:
+
+```powershell
+Invoke-RestMethod -Method POST -Uri http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/UNKNOWN -ContentType "application/json" -Body '{"type": "buy"}'
+```
+
+Response:
+
+```json
+{"status":404,"message":"Stock not found: UNKNOWN"}
+```
+
+**Bank has no stock left — 400:**
+
 ```bash
-# bank has no stock left → 400
 curl -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL \
   -H "Content-Type: application/json" \
   -d '{"type": "buy"}'
-# {"status":400,"message":"Stock AAPL is out of stock"}
 ```
+
+PowerShell:
+
+```powershell
+Invoke-RestMethod -Method POST -Uri http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL -ContentType "application/json" -Body '{"type": "buy"}'
+```
+
+Response:
+
+```json
+{"status":400,"message":"Stock AAPL is out of stock"}
+```
+
+**Trying to sell a stock you don't own — 400:**
+
 ```bash
-# trying to sell a stock you don't own → 400
 curl -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL \
   -H "Content-Type: application/json" \
   -d '{"type": "sell"}'
-# {"status":400,"message":"Wallet doesn't have enough stocks: AAPL"}
+```
+
+PowerShell:
+
+```powershell
+Invoke-RestMethod -Method POST -Uri http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL -ContentType "application/json" -Body '{"type": "sell"}'
+```
+
+Response:
+
+```json
+{"status":400,"message":"Wallet doesn't have enough stocks: AAPL"}
 ```
 
 ### Chaos
@@ -187,18 +318,28 @@ curl -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/
 ```bash
 curl -X POST http://localhost:8080/chaos
 ```
+
+PowerShell:
+
+```powershell
+Invoke-RestMethod -Method POST -Uri http://localhost:8080/chaos
+```
+
 ---
 
 ## High Availability
 
-nginx is configured with `least_conn` load balancing and automatic failover:
+nginx is configured with `least_conn` load balancing and automatic failover.
+
+Kill one instance:
 
 ```bash
-# kill one instance (assuming default port)
 curl -X POST http://localhost:8080/chaos
 ```
+
+Next request still works — nginx routes to the second instance:
+
 ```bash
-# next request still works — nginx routes to the second instance
 curl http://localhost:8080/stocks
 ```
 
