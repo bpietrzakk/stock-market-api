@@ -113,8 +113,9 @@ All examples use port 8080. Replace with your configured port if different.
 | `POST` | `/stocks` | Set bank stock state |
 | `GET` | `/stocks` | Get current bank state |
 
-**Set bank state:**
+#### `POST /stocks` — Set bank state
 
+Linux / macOS:
 ```bash
 curl -X POST http://localhost:8080/stocks \
   -H "Content-Type: application/json" \
@@ -122,30 +123,30 @@ curl -X POST http://localhost:8080/stocks \
 ```
 
 PowerShell:
-
 ```powershell
 curl.exe -X POST http://localhost:8080/stocks -H "Content-Type: application/json" -d '{\"stocks\": [{\"name\": \"AAPL\", \"quantity\": 100}, {\"name\": \"GOOG\", \"quantity\": 50}]}'
 ```
 
 Returns 200 OK.
 
-**Get bank state:**
+#### `GET /stocks` — Get bank state
 
+Linux / macOS:
 ```bash
 curl http://localhost:8080/stocks
 ```
 
 PowerShell:
-
 ```powershell
 curl.exe http://localhost:8080/stocks
 ```
 
 Response:
-
 ```json
 {"stocks":[{"name":"AAPL","quantity":100},{"name":"GOOG","quantity":50}]}
 ```
+
+---
 
 ### Wallet
 
@@ -155,8 +156,11 @@ Response:
 | `GET` | `/wallets/{wallet_id}` | Get wallet state |
 | `GET` | `/wallets/{wallet_id}/stocks/{stock_name}` | Get quantity of a specific stock |
 
-**Buy a stock** (wallet is created automatically if it doesn't exist):
+#### `POST /wallets/{wallet_id}/stocks/{stock_name}` — Buy a stock
 
+Wallet is created automatically if it doesn't exist.
+
+Linux / macOS:
 ```bash
 curl -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL \
   -H "Content-Type: application/json" \
@@ -164,15 +168,15 @@ curl -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/
 ```
 
 PowerShell:
-
 ```powershell
 curl.exe -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL -H "Content-Type: application/json" -d '{\"type\": \"buy\"}'
 ```
 
 Returns 200 OK.
 
-**Sell a stock:**
+#### `POST /wallets/{wallet_id}/stocks/{stock_name}` — Sell a stock
 
+Linux / macOS:
 ```bash
 curl -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL \
   -H "Content-Type: application/json" \
@@ -180,48 +184,47 @@ curl -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/
 ```
 
 PowerShell:
-
 ```powershell
 curl.exe -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL -H "Content-Type: application/json" -d '{\"type\": \"sell\"}'
 ```
 
 Returns 200 OK.
 
-**Get wallet state:**
+#### `GET /wallets/{wallet_id}` — Get wallet state
 
+Linux / macOS:
 ```bash
 curl http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000
 ```
 
 PowerShell:
-
 ```powershell
 curl.exe http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000
 ```
 
 Response:
-
 ```json
 {"id":"123e4567-e89b-12d3-a456-426614174000","stocks":[{"name":"AAPL","quantity":1}]}
 ```
 
-**Get quantity of a specific stock:**
+#### `GET /wallets/{wallet_id}/stocks/{stock_name}` — Get quantity of a specific stock
 
+Linux / macOS:
 ```bash
 curl http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL
 ```
 
 PowerShell:
-
 ```powershell
 curl.exe http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL
 ```
 
 Response:
-
 ```
 1
 ```
+
+---
 
 ### Audit Log
 
@@ -229,28 +232,32 @@ Response:
 |--------|------|-------------|
 | `GET` | `/log` | Get all transactions ordered by date |
 
+#### `GET /log` — Get audit log
+
+Linux / macOS:
 ```bash
 curl http://localhost:8080/log
 ```
 
 PowerShell:
-
 ```powershell
 curl.exe http://localhost:8080/log
 ```
 
 Response:
-
 ```json
 {"log":[{"type":"buy","wallet_id":"123e4567-e89b-12d3-a456-426614174000","stock_name":"AAPL"}]}
 ```
 
+---
+
 ### Error responses
 
-The examples below assume bank state was set with AAPL at quantity 0 for the "out of stock" case, and the wallet has never bought AAPL for the "insufficient wallet stock" case.
+Examples below assume bank state was set with AAPL at quantity 0 for the "out of stock" case, and the wallet has never bought AAPL for the "insufficient wallet stock" case.
 
-**Stock doesn't exist in bank — 404:**
+#### Stock doesn't exist in bank — `404`
 
+Linux / macOS:
 ```bash
 curl -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/UNKNOWN \
   -H "Content-Type: application/json" \
@@ -258,19 +265,18 @@ curl -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/
 ```
 
 PowerShell:
-
 ```powershell
 curl.exe -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/UNKNOWN -H "Content-Type: application/json" -d '{\"type\": \"buy\"}'
 ```
 
 Response:
-
 ```json
 {"status":404,"message":"Stock not found: UNKNOWN"}
 ```
 
-**Bank has no stock left — 400:**
+#### Bank has no stock left — `400`
 
+Linux / macOS:
 ```bash
 curl -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL \
   -H "Content-Type: application/json" \
@@ -278,19 +284,18 @@ curl -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/
 ```
 
 PowerShell:
-
 ```powershell
 curl.exe -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL -H "Content-Type: application/json" -d '{\"type\": \"buy\"}'
 ```
 
 Response:
-
 ```json
 {"status":400,"message":"Stock AAPL is out of stock"}
 ```
 
-**Trying to sell a stock you don't own — 400:**
+#### Selling a stock you don't own — `400`
 
+Linux / macOS:
 ```bash
 curl -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL \
   -H "Content-Type: application/json" \
@@ -298,16 +303,16 @@ curl -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/
 ```
 
 PowerShell:
-
 ```powershell
 curl.exe -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL -H "Content-Type: application/json" -d '{\"type\": \"sell\"}'
 ```
 
 Response:
-
 ```json
 {"status":400,"message":"Wallet doesn't have enough stocks: AAPL"}
 ```
+
+---
 
 ### Chaos
 
@@ -315,12 +320,14 @@ Response:
 |--------|------|-------------|
 | `POST` | `/chaos` | Kill current app instance (HA demo) |
 
+#### `POST /chaos` — Kill current instance
+
+Linux / macOS:
 ```bash
 curl -X POST http://localhost:8080/chaos
 ```
 
 PowerShell:
-
 ```powershell
 curl.exe -X POST http://localhost:8080/chaos
 ```
