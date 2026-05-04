@@ -158,6 +158,9 @@ curl -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/
 |--------|------|-------------|
 | `POST` | `/chaos` | Kill current app instance (HA demo) |
 
+```bash
+curl -X POST http://localhost:8080/chaos
+```
 ---
 
 ## High Availability
