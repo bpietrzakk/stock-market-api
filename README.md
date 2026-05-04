@@ -71,10 +71,10 @@ cd stock-market-simulation
 
 **Windows:**
 ```bash
-start.bat           # default port 8080
+.\start.bat           # default port 8080
 ```
 ```bash
-start.bat 9090      # custom port
+.\start.bat 9090      # custom port
 ```
 
 The application will be available at `http://localhost:<PORT>`.
