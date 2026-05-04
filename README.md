@@ -104,7 +104,7 @@ docker compose down
 
 All examples use port 8080. Replace with your configured port if different.
 
-`curl` works on Linux, macOS, and Windows CMD (Windows 10+). On Windows PowerShell, `curl` is an alias for `Invoke-WebRequest` — use the PowerShell examples instead.
+`curl` works on Linux, macOS, and Windows CMD (Windows 10+). On Windows PowerShell, `curl` is an alias for `Invoke-WebRequest` — use `curl.exe` instead (ships with Windows 10+, same syntax as curl).
 
 ### Bank
 
@@ -124,7 +124,7 @@ curl -X POST http://localhost:8080/stocks \
 PowerShell:
 
 ```powershell
-Invoke-RestMethod -Method POST -Uri http://localhost:8080/stocks -ContentType "application/json" -Body '{"stocks": [{"name": "AAPL", "quantity": 100}, {"name": "GOOG", "quantity": 50}]}'
+curl.exe -X POST http://localhost:8080/stocks -H "Content-Type: application/json" -d '{\"stocks\": [{\"name\": \"AAPL\", \"quantity\": 100}, {\"name\": \"GOOG\", \"quantity\": 50}]}'
 ```
 
 Returns 200 OK.
@@ -138,7 +138,7 @@ curl http://localhost:8080/stocks
 PowerShell:
 
 ```powershell
-Invoke-RestMethod http://localhost:8080/stocks
+curl.exe http://localhost:8080/stocks
 ```
 
 Response:
@@ -166,7 +166,7 @@ curl -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/
 PowerShell:
 
 ```powershell
-Invoke-RestMethod -Method POST -Uri http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL -ContentType "application/json" -Body '{"type": "buy"}'
+curl.exe -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL -H "Content-Type: application/json" -d '{\"type\": \"buy\"}'
 ```
 
 Returns 200 OK.
@@ -182,7 +182,7 @@ curl -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/
 PowerShell:
 
 ```powershell
-Invoke-RestMethod -Method POST -Uri http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL -ContentType "application/json" -Body '{"type": "sell"}'
+curl.exe -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL -H "Content-Type: application/json" -d '{\"type\": \"sell\"}'
 ```
 
 Returns 200 OK.
@@ -196,7 +196,7 @@ curl http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000
 PowerShell:
 
 ```powershell
-Invoke-RestMethod http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000
+curl.exe http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000
 ```
 
 Response:
@@ -214,7 +214,7 @@ curl http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/A
 PowerShell:
 
 ```powershell
-Invoke-RestMethod http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL
+curl.exe http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL
 ```
 
 Response:
@@ -236,7 +236,7 @@ curl http://localhost:8080/log
 PowerShell:
 
 ```powershell
-Invoke-RestMethod http://localhost:8080/log
+curl.exe http://localhost:8080/log
 ```
 
 Response:
@@ -260,7 +260,7 @@ curl -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/
 PowerShell:
 
 ```powershell
-Invoke-RestMethod -Method POST -Uri http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/UNKNOWN -ContentType "application/json" -Body '{"type": "buy"}'
+curl.exe -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/UNKNOWN -H "Content-Type: application/json" -d '{\"type\": \"buy\"}'
 ```
 
 Response:
@@ -280,7 +280,7 @@ curl -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/
 PowerShell:
 
 ```powershell
-Invoke-RestMethod -Method POST -Uri http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL -ContentType "application/json" -Body '{"type": "buy"}'
+curl.exe -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL -H "Content-Type: application/json" -d '{\"type\": \"buy\"}'
 ```
 
 Response:
@@ -300,7 +300,7 @@ curl -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/
 PowerShell:
 
 ```powershell
-Invoke-RestMethod -Method POST -Uri http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL -ContentType "application/json" -Body '{"type": "sell"}'
+curl.exe -X POST http://localhost:8080/wallets/123e4567-e89b-12d3-a456-426614174000/stocks/AAPL -H "Content-Type: application/json" -d '{\"type\": \"sell\"}'
 ```
 
 Response:
@@ -322,7 +322,7 @@ curl -X POST http://localhost:8080/chaos
 PowerShell:
 
 ```powershell
-Invoke-RestMethod -Method POST -Uri http://localhost:8080/chaos
+curl.exe -X POST http://localhost:8080/chaos
 ```
 
 ---
