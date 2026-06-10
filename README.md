@@ -1,6 +1,6 @@
 # Stock Market Simulator
 
-Simplified stock exchange REST API with high availability. Built for Remitly internship recruitment task.
+Simplified stock exchange REST API with high availability.
 
 ---
 
